@@ -50,9 +50,8 @@
             margin-bottom: 4px
         }
 
-        .simplebar-content:first-child,
-        .simplebar-content>li {
-            padding: 24px 0 !important
+        .simplebar-content, .simplebar-content > li:nth-child(2) {
+            padding-top: 24px!important;
         }
     </style>
 </head>
@@ -942,7 +941,12 @@
 
                         <li class="nav-item">
                             <a class="nav-link menu-link" href="blog.html">
-                                <i class="ri-file-list-3-line"></i> <span data-key="t-widgets">Blog</span>
+                                <i class="ri-file-list-3-line"></i> <span data-key="t-blog">Blog</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link menu-link" href="admin.html">
+                                <i class="ri-book-mark-line"></i> <span data-key="t-dictionary">Dictionary</span>
                             </a>
                         </li>
                     </ul>
@@ -1350,7 +1354,7 @@
                                             <div class="ProseMirror-icon" title="Toggle strong style">
                                                 <svg style="width: 0.786133em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon-4eb53ba9">
+                                                        xlink:href="/admin.html#pm-icon-4eb53ba9">
                                                     </use>
                                                 </svg>
                                             </div>
@@ -1358,21 +1362,21 @@
                                             <div class="ProseMirror-icon" title="Toggle emphasis"><svg
                                                     style="width: 0.571289em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon-25612f7a">
+                                                        xlink:href="/admin.html#pm-icon-25612f7a">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem">
                                             <div class="ProseMirror-icon" title="Toggle code font"><svg
                                                     style="width: 0.875em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon--1d0983fe">
+                                                        xlink:href="/admin.html#pm-icon--1d0983fe">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem">
                                             <div class="ProseMirror-icon ProseMirror-menu-disabled"
                                                 title="Add or remove link"><svg style="width: 0.928711em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon--78ecc05e">
+                                                        xlink:href="/admin.html#pm-icon--78ecc05e">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuseparator"></span><span
@@ -1389,14 +1393,14 @@
                                             <div class="ProseMirror-icon" title="Undo last change"><svg
                                                     style="width: 1em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon-5a60796">
+                                                        xlink:href="/admin.html#pm-icon-5a60796">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem">
                                             <div class="ProseMirror-icon ProseMirror-menu-disabled"
                                                 title="Redo last undone change"><svg style="width: 1em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon--6ff882d4">
+                                                        xlink:href="/admin.html#pm-icon--6ff882d4">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuseparator"></span><span
@@ -1404,35 +1408,35 @@
                                             <div class="ProseMirror-icon" title="Wrap in bullet list"><svg
                                                     style="width: 0.857143em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon--6141f81">
+                                                        xlink:href="/admin.html#pm-icon--6141f81">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem">
                                             <div class="ProseMirror-icon" title="Wrap in ordered list"><svg
                                                     style="width: 0.857143em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon-28a6efee">
+                                                        xlink:href="/admin.html#pm-icon-28a6efee">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem">
                                             <div class="ProseMirror-icon" title="Wrap in block quote"><svg
                                                     style="width: 0.714286em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon--2d1566b3">
+                                                        xlink:href="/admin.html#pm-icon--2d1566b3">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem" style="display: none;">
                                             <div class="ProseMirror-icon" title="Join with above block"
                                                 style="display: none;"><svg style="width: 0.888889em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon--3cb9c8">
+                                                        xlink:href="/admin.html#pm-icon--3cb9c8">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem" style="display: none;">
                                             <div class="ProseMirror-icon" title="Lift out of enclosing block"
                                                 style="display: none;"><svg style="width: 1em;">
                                                     <use
-                                                        xlink:href="https://crud-html.vercel.app/admin.html#pm-icon--2eec1b76">
+                                                        xlink:href="/admin.html#pm-icon--2eec1b76">
                                                     </use>
                                                 </svg></div>
                                         </span><span class="ProseMirror-menuitem">
@@ -2154,9 +2158,10 @@
     <script src="assets/libs/sweetalert2/sweetalert2.min.js"></script>
     <script defer src="assets/js/rte.js"></script>
 
-    <script src="assets/js/pages/form-check.js"></script>
-    <script src="assets/js/prosemirror.js"></script>
+    <script src="assets/js/prosemirror.min.js"></script>
+    <script src="assets/js/prosemirror.init.js"></script>
     <script src="assets/js/app.js"></script>
+    <script src="assets/js/pages/form-check.js"></script>
 
     <!-- <div class="swal2-container swal2-center swal2-backdrop-show" style="overflow-y: auto;"><div aria-labelledby="swal2-title" aria-describedby="swal2-html-container" class="swal2-popup swal2-modal swal2-icon-success swal2-show" tabindex="-1" role="dialog" aria-live="assertive" aria-modal="true" style="display: grid;"><button type="button" class="swal2-close" aria-label="Close this dialog" style="display: flex;">×</button><ul class="swal2-progress-steps" style="display: none;"></ul><div class="swal2-icon swal2-success swal2-icon-show" style="display: flex;"><div class="swal2-success-circular-line-left" style="background-color: rgb(33, 37, 41);"></div> <span class="swal2-success-line-tip"></span> <span class="swal2-success-line-long"></span> <div class="swal2-success-ring"></div> <div class="swal2-success-fix" style="background-color: rgb(33, 37, 41);"></div> <div class="swal2-success-circular-line-right" style="background-color: rgb(33, 37, 41);"></div> </div><img class="swal2-image" style="display: none;"><h2 class="swal2-title" id="swal2-title" style="display: block;">Customer inserted successfully!</h2><div class="swal2-html-container" id="swal2-html-container" style="display: none;"></div><input class="swal2-input" style="display: none;"><input type="file" class="swal2-file" style="display: none;"><div class="swal2-range" style="display: none;"><input type="range"><output></output></div><select class="swal2-select" style="display: none;"></select><div class="swal2-radio" style="display: none;"></div><label for="swal2-checkbox" class="swal2-checkbox" style="display: none;"><input type="checkbox"><span class="swal2-label"></span></label><textarea class="swal2-textarea" style="display: none;"></textarea><div class="swal2-validation-message" id="swal2-validation-message" style="display: none;"></div><div class="swal2-actions" style="display: none;"><div class="swal2-loader"></div><button type="button" class="swal2-confirm swal2-styled" aria-label="" style="display: none;">OK</button><button type="button" class="swal2-deny swal2-styled" aria-label="" style="display: none;">No</button><button type="button" class="swal2-cancel swal2-styled" aria-label="" style="display: none;">Cancel</button></div><div class="swal2-footer" style="display: none;"></div><div class="swal2-timer-progress-bar-container"><div class="swal2-timer-progress-bar" style="display: none;"></div></div></div></div> -->
 </body>

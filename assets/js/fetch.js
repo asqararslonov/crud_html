@@ -11,7 +11,7 @@ async function __FetchCreateEngUzb(id, name, desc) {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie("token"),
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
         },
         body: JSON.stringify({
             word: name,
@@ -28,7 +28,7 @@ async function __FetchCreateUzbEng(id, name, desc) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie("token"),
+                'Authorization': 'Bearer ' + localStorage.getItem("token"),
             },
             body: JSON.stringify({
                 word: name,
@@ -49,35 +49,15 @@ async function __FetchReadUzbEng() {
     return await fetchData.json()
 }
 
-function getCookie(name) {
-    // Split cookie string and get all individual name=value pairs in an array
-    var cookieArr = document.cookie.split(";");
-
-    // Loop through the array elements
-    for (var i = 0; i < cookieArr.length; i++) {
-        var cookiePair = cookieArr[i].split("=");
-
-        /* Removing whitespace at the beginning of the cookie name
-        and compare it with the given string */
-        if (name == cookiePair[0].trim()) {
-            // Decode the cookie value and return
-            return decodeURIComponent(cookiePair[1]);
-        }
-    }
-
-    // Return null if not found
-    return null;
-}
 
 async function __FetchUpdateEngUzb(id, name, desc) {
     try {
-        console.log(id, name, desc)
         let fetchData = await fetch("https://dictinary-api.vercel.app/admin/update/eng-uzb", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie("token"),
+                'Authorization': 'Bearer ' + localStorage.getItem("token"),
             },
             body: JSON.stringify({
                 id: id,
@@ -98,7 +78,7 @@ async function __FetchUpdateUzbEng(id, name, desc) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie("token"),
+                'Authorization': 'Bearer ' + localStorage.getItem("token"),
             },
             body: JSON.stringify({
                 id: id,
@@ -121,7 +101,7 @@ async function __FetchDeleteEngUzb(id) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie("token"),
+                'Authorization': 'Bearer ' + localStorage.getItem("token"),
             },
             body: JSON.stringify({
                 id: id,
@@ -140,7 +120,7 @@ async function __FetchDeleteUzbEng(id) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie("token"),
+                'Authorization': 'Bearer ' + localStorage.getItem("token"),
             },
             body: JSON.stringify({
                 id: id,
@@ -158,7 +138,7 @@ async function __FetchFilterEngUzb(search) {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie("token"),
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
         },
         body: JSON.stringify({
             word: search
@@ -172,7 +152,7 @@ async function __FetchFilterUzbEng(search) {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie("token"),
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
         },
         body: JSON.stringify({
             word: search
@@ -187,7 +167,7 @@ async function __FetchFindEngUzb(id) {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie("token"),
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
         },
         body: JSON.stringify({
             id: id
@@ -201,7 +181,7 @@ async function __FetchFindUzbEng(id) {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getCookie("token"),
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
         },
         body: JSON.stringify({
             id: id

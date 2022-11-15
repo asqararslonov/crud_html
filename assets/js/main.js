@@ -1,73 +1,10 @@
 'use strict'
 
-const SERVER = 'https://dictionary-blog-api.vercel.app' // 'http://localhost:4000'
+const SERVER = 'https://dictinary-api.vercel.app'
+// const SERVER = 'http://localhost:4000'
 const form = document.querySelector('#article-form')
 const thumbnail = { url: null }
-
-
-class UploadAdapter {
-  constructor(loader) {
-    this.loader = loader
-  }
-
-
-  upload() {
-    return this.loader.file
-      .then(file => new Promise((resolve, reject) => {
-        this._initRequest()
-        this._initListeners(resolve, reject, file)
-        this._sendRequest(file)
-      }))
-  }
-
-
-  abort() {
-    if (this.xhr) this.xhr.abort()
-  }
-
-
-  _initRequest() {
-    const xhr = this.xhr = new XMLHttpRequest()
-    xhr.open('POST', 'https://api.imgbb.com/1/upload', true)
-    xhr.responseType = 'json'
-  }
-
-
-  _initListeners(resolve, reject, file) {
-    const xhr = this.xhr
-    const loader = this.loader
-    const genericErrorText = `Couldn't upload file: ${file.name}.`
-
-    xhr.addEventListener('error', () => reject(genericErrorText))
-    xhr.addEventListener('abort', () => reject())
-    xhr.addEventListener('load', () => {
-      const response = xhr.response
-
-      if (!response || response.error)
-        return reject(response?.error ? response.error.message : genericErrorText)
-
-      if (!thumbnail.url) thumbnail.url = response.data.thumb.url
-      resolve({ default: response.data.image.url })
-    })
-
-    if (xhr.upload)
-      xhr.upload.addEventListener('progress', event => {
-        if (event.lengthComputable) {
-          loader.uploadTotal = event.total
-          loader.uploaded = event.loaded
-        }
-      })
-  }
-
-
-  _sendRequest(file) {
-    const data = new FormData()
-
-    data.append('image', file)
-    data.append('key', '8aeecb1733dae9a0cb13b96cb0cbc45e')
-    this.xhr.send(data)
-  }
-}
+let delete_urls = []
 
 
 const login = async event => {
@@ -114,25 +51,103 @@ const access = async () => {
 }
 
 
-const ckEditor = () => {
-  ClassicEditor
-    .create(document.querySelector('#editor'))
-    .then(newEditor => {
-      window.ck = newEditor
+const images_upload_handler = (blobInfo, progress) => new Promise((resolve, reject) => {
+  // Init Request
+  const xhr = new XMLHttpRequest()
+  xhr.withCredentials = false
+  xhr.open('POST', 'https://api.imgbb.com/1/upload')
+  xhr.responseType = 'json'
 
-      newEditor.plugins.get('FileRepository').createUploadAdapter = loader => {
-        return new UploadAdapter(loader)
-      }
+  // Init Listeners
+  xhr.upload.onprogress = e => progress(e.loaded / e.total * 100)
+  xhr.onerror = () => reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status)
+
+  xhr.onload = () => {
+    if (xhr.status === 403) {
+      reject({ message: 'HTTP Error: ' + xhr.status, remove: true })
+      return
+    }
+
+    if (xhr.status < 200 || xhr.status >= 300) {
+      reject('HTTP Error: ' + xhr.status)
+      return
+    }
+
+    const { data } = xhr.response
+
+    if (!data) {
+      reject('Invalid DATA: ' + json.data)
+      return
+    }
+
+    delete_urls.push(data.delete_url)
+    if (!thumbnail.url) thumbnail.url = data.thumb.url
+
+    resolve(data.image.url)
+  }
+
+  // Send Request
+  const formData = new FormData()
+  formData.append('image', blobInfo.blob())
+  formData.append('key', '8aeecb1733dae9a0cb13b96cb0cbc45e')
+  formData.append('name', Date.now().toString())
+  xhr.send(formData)
+})
+
+
+const tinyEditor = async content => {
+  try {
+    // window.tiny = await tinymce.init({
+    //   selector: '#editor',
+    //   plugins: [
+    //     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+    //     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+    //     'insertdatetime', 'media', 'table', 'help', 'wordcount'
+    //   ],
+    //   // plugins: 'lists formats preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist wordcount help charmap quickbars emoticons',
+    //   toolbar: false,
+    //   height: 464,
+    //   quickbars_insert_toolbar: false,
+    //   quickbars_selection_toolbar: 'bold italic underline strikethrough codesample | link | removeformat',
+    //   image_advtab: true,
+    //   images_upload_handler
+    // })
+    window.tiny = await tinymce.init({
+      selector: '#editor',
+      plugins: [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        'insertdatetime', 'media', 'table', 'help', 'wordcount'
+      ],
+      // plugins: 'lists formats preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist wordcount help charmap quickbars emoticons',
+      // toolbar: 'undo redo | blocks | ' +
+      // 'bold italic backcolor | alignleft aligncenter ' +
+      // 'alignright alignjustify | bullist numlist outdent indent | ' +
+      // 'removeformat | table',
+      toolbar: "table fontsizeselect bold italic underline forecolor backcolor bullist numlist link preview code", imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage",
+      height: 464,
+      quickbars_insert_toolbar: false,
+      quickbars_selection_toolbar: 'bold italic underline strikethrough codesample | link | removeformat',
+      image_advtab: true,
+      images_upload_handler
     })
-    .catch(error => {
-      alert("An error occurred!")
-      console.error(error)
-    })
+
+    if (content) tinymce.activeEditor.setContent(content)
+  } catch (error) {
+    console.error(error)
+    alert("An error occurred!")
+  }
 }
+// Prevent Bootstrap dialog from blocking focusin
+document.addEventListener('focusin', (e) => {
+  if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+    e.stopImmediatePropagation();
+  }
+});
 
 
 const addArticle = () => {
-  if (!window.ck) ckEditor()
+  if (!window.tiny) tinyEditor()
 
   try {
     form.addEventListener('submit', async event => {
@@ -147,9 +162,11 @@ const addArticle = () => {
         },
         body: JSON.stringify({
           title: form.title.value,
-          body: form.body.value,
+          body: tinymce.activeEditor.getContent(),
+          summary: tinymce.activeEditor.getContent({ format: 'text' }).replaceAll('\n', '').slice(0, 241) + '...',
           tags: form.tags.value.split(/\s*,\s*/),
-          thumbnail: thumbnail.url
+          thumbnail: thumbnail.url,
+          delete_urls
         })
       })
 
@@ -161,7 +178,7 @@ const addArticle = () => {
       }
     })
   } catch (error) {
-    alert("An erro occurred!")
+    alert("An error occurred!")
     console.error(error)
   }
 }
@@ -181,7 +198,7 @@ const getArticles = async () => {
             <td><img src="${thumbnail}" width="75"></td>
             <td><h5>${article.title}</h5></td>
             <td><h5>${article.views}</h5></td>
-            <td><h5>${new Date('2022-10-10T10:45:27.335Z').toDateString(article.createdAt)}</h5></td>
+            <td><h5>${new Date(article.createdAt).toDateString(article.createdAt)}</h5></td>
             <td><div class="d-flex gap-2">
                 <div class="edit">
                     <button type="button" onclick='editArticle(${JSON.stringify(article)})' class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#article-modal">Edit</button>
@@ -204,11 +221,14 @@ const getArticles = async () => {
 
 const editArticle = article => {
   form.title.value = article.title
-  form.body.value = article.body
   form.tags.value = article.tags.join(',')
   thumbnail.url = article.thumbnail
+  delete_urls = article.delete_urls
 
-  if (!window.ck) ckEditor()
+  if (!window.tiny)
+    tinyEditor(article.body)
+  else
+    tinymce.activeEditor.setContent(article.body)
 
   form.addEventListener('submit', async event => {
     event.preventDefault()
@@ -223,9 +243,11 @@ const editArticle = article => {
         },
         body: JSON.stringify({
           title: form.title.value,
-          body: form.body.value,
+          body: tinymce.activeEditor.getContent(),
+          summary: tinymce.activeEditor.getContent({ format: 'text' }).replaceAll('\n', '').slice(0, 241),
           tags: form.tags.value.split(/\s*,\s*/),
-          thumbnail: thumbnail.url
+          thumbnail: thumbnail.url,
+          delete_urls
         })
       })
 
@@ -257,8 +279,19 @@ const deleteArticle = async id => {
     })
 
     if (response.ok) {
-      alert("Deleted!")
-      location.reload()
+      const modalBody = document.querySelector('#urls-list')
+
+      const deleteUrlsModal = new bootstrap.Modal('#delete-urls', {
+        keyboard: false, backdrop: 'static'
+      })
+
+      const { delete_urls } = await response.json()
+
+      for (const url of delete_urls) {
+        modalBody.innerHTML += `<li><a href="${url}" target="_blank">${url}</a></</li>`
+      }
+
+      deleteUrlsModal.show()
     } else {
       alert("An error occurred!")
     }
@@ -266,4 +299,9 @@ const deleteArticle = async id => {
     alert("An error occurred!")
     console.error(error)
   }
+}
+
+
+const iDeletedThem = () => {
+  location.reload()
 }
