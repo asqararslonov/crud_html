@@ -97,34 +97,10 @@ const images_upload_handler = (blobInfo, progress) => new Promise((resolve, reje
 
 const tinyEditor = async content => {
   try {
-    // window.tiny = await tinymce.init({
-    //   selector: '#editor',
-    //   plugins: [
-    //     'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-    //     'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-    //     'insertdatetime', 'media', 'table', 'help', 'wordcount'
-    //   ],
-    //   // plugins: 'lists formats preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist wordcount help charmap quickbars emoticons',
-    //   toolbar: false,
-    //   height: 464,
-    //   quickbars_insert_toolbar: false,
-    //   quickbars_selection_toolbar: 'bold italic underline strikethrough codesample | link | removeformat',
-    //   image_advtab: true,
-    //   images_upload_handler
-    // })
     window.tiny = await tinymce.init({
       selector: '#editor',
-      plugins: [
-        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-      ],
-      // plugins: 'lists formats preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist wordcount help charmap quickbars emoticons',
-      // toolbar: 'undo redo | blocks | ' +
-      // 'bold italic backcolor | alignleft aligncenter ' +
-      // 'alignright alignjustify | bullist numlist outdent indent | ' +
-      // 'removeformat | table',
-      toolbar: "table fontsizeselect bold italic underline forecolor backcolor bullist numlist link preview code", imagetools_toolbar: "rotateleft rotateright | flipv fliph | editimage",
+      plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+      toolbar: false,
       height: 464,
       quickbars_insert_toolbar: false,
       quickbars_selection_toolbar: 'bold italic underline strikethrough codesample | link | removeformat',
@@ -138,12 +114,6 @@ const tinyEditor = async content => {
     alert("An error occurred!")
   }
 }
-// Prevent Bootstrap dialog from blocking focusin
-document.addEventListener('focusin', (e) => {
-  if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
-    e.stopImmediatePropagation();
-  }
-});
 
 
 const addArticle = () => {
@@ -188,7 +158,13 @@ const getArticles = async () => {
   const tbody = document.querySelector('#articles tbody')
 
   try {
-    const response = await fetch(`${SERVER}/api/v1/blog`)
+    const response = await fetch(`${SERVER}/api/v1/blog/admin`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    })
     const articles = await response.json()
 
     for (const article of articles) {
@@ -211,7 +187,7 @@ const getArticles = async () => {
             </tr>`
     }
   } catch (error) {
-    // alert("An error occurred!")
+    alert("An error occurred!")
     console.error(error)
   }
 
@@ -221,14 +197,14 @@ const getArticles = async () => {
 
 const editArticle = article => {
   form.title.value = article.title
-  form.tags.value = article.tags.join(',')
+  form.tags.value = article.tags?.join(',') ?? ''
   thumbnail.url = article.thumbnail
   delete_urls = article.delete_urls
 
-  if (!window.tiny)
-    tinyEditor(article.body)
-  else
+  if (window.tiny)
     tinymce.activeEditor.setContent(article.body)
+  else
+    tinyEditor(article.body)
 
   form.addEventListener('submit', async event => {
     event.preventDefault()
